@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>miubu marketplace</title>
+</head>
+
+<body>
+  <h1>miubu.marketplace</h1> 
+  {% if session.username %}
+  <p>
+    Hei, {{ session.username }}
+  </p>
+  {% endif %}
+
+  <p>
+    <a href="/login">kirjaudu sisään</a>
+    <a href="/register">rekisteröidy</a>
+    <a href="/logout">kirjaudu ulos</a>
+
+  </p>
+</body>
+
+</html>
