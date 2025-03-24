@@ -43,7 +43,7 @@ def login():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-
+    
     sql = "SELECT id, password_hash FROM users WHERE username = ?"
     result = db.query(sql, [username])[0]
     user_id = result["id"]
@@ -55,7 +55,7 @@ def login():
         return redirect("/")
     else:
         return "VIRHE: väärä tunnus tai salasana"
-    
+
 @app.route("/show_item/<int:item_id>")
 def show_item(item_id):
     item = items.get_item(item_id)
@@ -88,7 +88,7 @@ def update_item():
     price = request.form["price"]
 
     items.update_item(item_id, title, descr, price)
-    return redirect("/item/" + str(item_id))
+    return redirect("/show_item/" + str(item_id))
 
 @app.route("/logout")
 def logout():

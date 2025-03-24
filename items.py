@@ -9,7 +9,7 @@ def get_items():
     return db.query(sql)
 
 def get_item(item_id):
-    sql = """SELECT items.id, items.title, items.descr, items.price, users.id user_id, users.username FROM items, users WHERE items.user_id = users.id AND items.id = ?"""
+    sql = "SELECT items.id, items.title, items.descr, items.price, users.id user_id, users.username FROM items, users WHERE items.user_id = users.id AND items.id = ?"
     return db.query(sql, [item_id])[0]
 
 def update_item(item_id, title, descr, price):
