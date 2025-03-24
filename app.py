@@ -56,7 +56,7 @@ def login():
     else:
         return "VIRHE: väärä tunnus tai salasana"
     
-@app.route("/item/<int:item_id>")
+@app.route("/show_item/<int:item_id>")
 def show_item(item_id):
     item = items.get_item(item_id)
     return render_template("show_item.html", item=item)
@@ -64,6 +64,11 @@ def show_item(item_id):
 @app.route("/new_item")
 def new_item():
     return render_template("new_item.html")
+
+@app.route("/edit_item/<int:item_id>")
+def edit_item(item_id):
+    item = items.get_item(item_id)
+    return render_template("edit_item.html", item=item)
 
 @app.route("/create_item", methods=["POST"])
 def create_item():
@@ -73,8 +78,17 @@ def create_item():
     user_id = session["user_id"]
 
     items.add_item(title, descr, price, user_id)
-
     return redirect("/")
+
+@app.route("/update_item", methods=["POST"])
+def update_item():
+    item_id = request.form["item_id"]
+    title = request.form["title"]
+    descr = request.form["descr"]
+    price = request.form["price"]
+
+    items.update_item(item_id, title, descr, price)
+    return redirect("/item/" + str(item_id))
 
 @app.route("/logout")
 def logout():
