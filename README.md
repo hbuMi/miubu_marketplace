@@ -1,6 +1,7 @@
 # miubu_marketplace
 second hand clothing marketplace
 
+Tavoitteet:
 - Käyttäjä pystyy luomaan tunnuksen ja kirjautumaan sisään sovellukseen.
 - Käyttäjä pystyy lisäämään, muokkaamaan ja poistamaan ilmoituksia.
 - Käyttäjä pystyy lisäämään kuvia ilmoitukseen.
