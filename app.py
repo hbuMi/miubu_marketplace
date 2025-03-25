@@ -61,6 +61,16 @@ def show_item(item_id):
     item = items.get_item(item_id)
     return render_template("show_item.html", item=item)
 
+@app.route("/find_item")
+def find_item():
+    query = request.args.get("query")
+    if query:
+        results = items.find_items(query)
+    else:
+        query = ""
+        results = []
+    return render_template("find_item.html", query=query, results=results)
+
 @app.route("/new_item")
 def new_item():
     return render_template("new_item.html")
