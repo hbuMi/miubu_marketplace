@@ -142,6 +142,8 @@ def update_item():
         abort(404)
     if item["user_id"] != session["user_id"]:
         abort(403)
+    if not title or len(title) > 50 or not descr or len(descr) > 1000:
+        abort(403)
     items.update_item(item_id, title, descr, price)
     return redirect("/show_item/" + str(item_id))
 

@@ -10,11 +10,11 @@
   <form action="/update_item" method="post">
     <p>
       Otsikko: <br />
-      <input type="text" name="title" value="{{ item.title }}"/>
+      <input type="text" name="title" value="{{ item.title }}" maxlength="50" required/>
     </p>
     <p>
         Kuvaus: <br />
-        <textarea rows="8" cols="50" name="descr">{{ item.descr }}</textarea>
+        <textarea rows="8" cols="50" name="descr" maxlength="1000" required>{{ item.descr }}</textarea>
     </p>
     <p>
         Hinta: <br />
