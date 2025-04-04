@@ -59,7 +59,8 @@ def show_item(item_id):
     item = items.get_item(item_id)
     if not item:
         abort(404)
-    return render_template("show_item.html", item=item)
+    classes = items.get_classes(item_id)
+    return render_template("show_item.html", item=item, classes=classes)
 
 @app.route("/user/<int:user_id>")
 def show_user(user_id):
@@ -120,14 +121,23 @@ def create_item():
     descr = request.form["descr"]
     price = request.form["price"]
     user_id = session["user_id"]
+    section = request.form["section"]
+    condition = request.form["condition"]
 
     if not title or len(title) > 50 or not descr or len(descr) > 1000:
         abort(403)
-
     if not re.search("^[1-9][0-9]{0,5}$", price):
         abort(403)
 
-    items.add_item(title, descr, price, user_id)
+    classes = []
+    section = request.form["section"]
+    if section:
+        classes.append(("Osasto", section))
+    condition = request.form["condition"]
+    if section:
+        classes.append(("Osasto", condition))
+
+    items.add_item(title, descr, price, user_id, classes)
     return redirect("/")
 
 @app.route("/update_item", methods=["POST"])

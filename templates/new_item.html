@@ -2,26 +2,63 @@
 <html>
 
 <head>
-  <title>Lisää ilmoitus</title>
+  <title>lisää ilmoitus</title>
 </head>
 
 <body>
-    <h1>Lisää ilmoitus</h1>
+    <h1>lisää ilmoitus</h1>
   <form action="/create_item" method="post">
     <p>
-      Otsikko: <br />
+      otsikko: <br />
       <input type="text" name="title" maxlength="50" required/>
     </p>
     <p>
-        Kuvaus: <br />
+        kuvaus: <br />
         <textarea rows="8" cols="50" name="descr" maxlength="1000" required></textarea>
     </p>
     <p>
-        Hinta: <br />
+        hinta: <br />
         <input type="text" name="price" size="7" pattern="[1-9][0-9]{0,5}" required/> €
     </p>
-
-    <input type="submit" value="Luo ilmoitus" />
+    <p>
+      Osasto: <br />
+      <select name="section">
+        <option value="">(valitse)</option>
+        <optgroup label="vaatteet">
+          <option value="farkut">farkut</option>
+          <option value="housut">housut</option>
+          <option value="housut">puvut</option>
+          <option value="takit">takit</option>
+          <option value="yläosat">yläosat</option>
+        </optgroup>
+        <optgroup label="kengät">
+          <option value="juhlakengät">juhlakengät</option>
+          <option value="loaferit">loaferit</option>
+          <option value="sandaalit">sandaalit</option>
+          <option value="saappaat">saappaat</option>
+          <option value="urheilukengät">urheilukengät</option>
+          <option value="vapaa-ajan kengät">vapaa-ajan kengät</option>
+        </optgroup>
+        <optgroup label="asusteet">
+          <option value="hatut">hatut</option>
+          <option value="korut">korut</option>
+          <option value="laukut">laukut</option>
+          <option value="vyöt">vyöt</option>
+          <option value="muut asusteet">muut asusteet</option>
+        </optgroup>
+      </select>
+    </p>
+    <p>
+      Kunto: <br />
+      <select name="condition">
+        <option value="uusi">uusi</option>
+        <option value="erinomainen">erinomainen</option>
+        <option value="hyvä">hyvä</option>
+        <option value="kohtalainen">kohtalainen</option>
+        <option value="heikko">heikko</option>
+      </select>
+    </p>
+    <input type="submit" value="luo ilmoitus" />
   </form>
 </body>
 
