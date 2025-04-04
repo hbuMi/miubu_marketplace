@@ -11,16 +11,19 @@
   <p>
     Hei, {{ session.username }}
   </p>
-  {% endif %}
-
   <p>
-    <a href="/login">kirjaudu sisään</a>
-    <a href="/register">rekisteröidy</a>
     <a href="/logout">kirjaudu ulos</a>
-
   </p>
   <p>
     <a  href="/new_item">Uusi ilmoitus</a>
+  </p>
+  {% else %}
+  <p>
+    <a href="/login">kirjaudu sisään</a>
+    <a href="/register">rekisteröidy</a>
+  </p>
+  {% endif %}
+  <p>
     <a  href="/find_item">Etsi ilmoitus</a>
   </p>
 
