@@ -5,6 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import db
 import config
 import items
+import re
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
@@ -119,6 +120,12 @@ def create_item():
     price = request.form["price"]
     user_id = session["user_id"]
 
+    if not title or len(title) > 50 or not descr or len(descr) > 1000:
+        abort(403)
+
+    if not re.search("^[1-9][0-9]{0,5}$", price):
+        abort(403)
+
     items.add_item(title, descr, price, user_id)
     return redirect("/")
 
@@ -126,16 +133,15 @@ def create_item():
 def update_item():
     check_login()
     item = items.get_item(item_id)
-    if not item:
-        abort(404)
-    if item["user_id"] != session["user_id"]:
-        abort(403)
-
     item_id = request.form["item_id"]
     title = request.form["title"]
     descr = request.form["descr"]
     price = request.form["price"]
 
+    if not item:
+        abort(404)
+    if item["user_id"] != session["user_id"]:
+        abort(403)
     items.update_item(item_id, title, descr, price)
     return redirect("/show_item/" + str(item_id))
 

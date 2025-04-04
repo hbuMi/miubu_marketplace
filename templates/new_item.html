@@ -10,15 +10,15 @@
   <form action="/create_item" method="post">
     <p>
       Otsikko: <br />
-      <input type="text" name="title" />
+      <input type="text" name="title" maxlength="50" required/>
     </p>
     <p>
         Kuvaus: <br />
-        <textarea rows="8" cols="50" name="descr"></textarea>
+        <textarea rows="8" cols="50" name="descr" maxlength="1000" required></textarea>
     </p>
     <p>
         Hinta: <br />
-        <input type="text" name="price" size="7" /> €
+        <input type="text" name="price" size="7" pattern="[1-9][0-9]{0,5}" required/> €
     </p>
 
     <input type="submit" value="Luo ilmoitus" />

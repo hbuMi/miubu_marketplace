@@ -14,7 +14,7 @@
   </p>
   {% endif %}
   <p>
-    {{ item.descr }}
+    {{ item.descr if item.descr else "Ei kuvausta" }}
   </p>
   <p>
     Hinta: {{ item.price }} €
