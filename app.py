@@ -1,7 +1,6 @@
 import sqlite3
 from flask import Flask
 from flask import abort, redirect, render_template, request, session
-from werkzeug.security import generate_password_hash, check_password_hash
 import db
 import config
 import items
@@ -31,14 +30,11 @@ def create():
     password2 = request.form["password2"]
     if password1 != password2:
         return "VIRHE: salasanat eivät ole samat"
-    password_hash = generate_password_hash(password1)
 
     try:
-        sql = "INSERT INTO users (username, password_hash) VALUES (?, ?)"
-        db.execute(sql, [username, password_hash])
+        users.create_user(username, password1)
     except sqlite3.IntegrityError:
         return "VIRHE: tunnus on jo varattu"
-
     return "Tunnus luotu"
 
 @app.route("/login", methods=["GET", "POST"])
@@ -49,18 +45,14 @@ def login():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-    
-    sql = "SELECT id, password_hash FROM users WHERE username = ?"
-    result = db.query(sql, [username])[0]
-    user_id = result["id"]
-    password_hash = result["password_hash"]
 
-    if check_password_hash(password_hash, password):
-        session["user_id"] = user_id
-        session["username"] = username
-        return redirect("/")
-    else:
-        return "VIRHE: väärä tunnus tai salasana"
+        user_id = users.check_login(username, password)
+        if user_id:
+            session["user_id"] = user_id
+            session["username"] = username
+            return redirect("/")
+        else:
+            return "VIRHE: väärä tunnus tai salasana"
 
 @app.route("/show_item/<int:item_id>")
 def show_item(item_id):
@@ -141,12 +133,12 @@ def create_item():
 @app.route("/update_item", methods=["POST"])
 def update_item():
     check_login()
-    item = items.get_item(item_id)
     item_id = request.form["item_id"]
     title = request.form["title"]
     descr = request.form["descr"]
     price = request.form["price"]
 
+    item = items.get_item(item_id)
     if not item:
         abort(404)
     if item["user_id"] != session["user_id"]:
