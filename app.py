@@ -1,7 +1,6 @@
 import sqlite3
 from flask import Flask
 from flask import abort, redirect, render_template, request, session
-import db
 import config
 import items
 import users
@@ -35,7 +34,7 @@ def create():
         users.create_user(username, password1)
     except sqlite3.IntegrityError:
         return "VIRHE: tunnus on jo varattu"
-    return "Tunnus luotu"
+    return "tunnus luotu"
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -59,8 +58,12 @@ def show_item(item_id):
     item = items.get_item(item_id)
     if not item:
         abort(404)
+
+    section = items.get_section(item['section_id'])
+    condition = items.get_condition(item['condition_id'])
+
     classes = items.get_classes(item_id)
-    return render_template("show_item.html", item=item, classes=classes)
+    return render_template("show_item.html", item=item, section=section, condition=condition, classes=classes)
 
 @app.route("/user/<int:user_id>")
 def show_user(user_id):
@@ -83,7 +86,13 @@ def find_item():
 @app.route("/new_item")
 def new_item():
     check_login()
-    return render_template("new_item.html")
+    sections = items.get_sections()
+    conditions = items.get_conditions()
+
+    section_groups = {}
+    for s in sections:
+        section_groups.setdefault(s["label"], []).append(s)
+    return render_template("new_item.html", sections=section_groups, conditions=conditions)
 
 @app.route("/edit_item/<int:item_id>")
 def edit_item(item_id):
@@ -121,23 +130,26 @@ def create_item():
     descr = request.form["descr"]
     price = request.form["price"]
     user_id = session["user_id"]
-    section = request.form["section"]
-    condition = request.form["condition"]
+    section_id = request.form["section_id"]
+    condition_id = request.form["condition_id"]
+
+    sections = items.get_sections()
+    conditions = items.get_conditions()
+
+    # Tarkistetaan, että valittu osio löytyy osioista
+    if not any(section["id"] == int(section_id) for section in sections):
+        return "VIRHE: valittu osio ei ole olemassa"
+
+    # Tarkistetaan, että valittu tila löytyy tiloista
+    if not any(condition["id"] == int(condition_id) for condition in conditions):
+        return "VIRHE: valittu tila ei ole olemassa"
 
     if not title or len(title) > 50 or not descr or len(descr) > 1000:
         abort(403)
     if not re.search("^[1-9][0-9]{0,5}$", price):
         abort(403)
 
-    classes = []
-    section = request.form["section"]
-    if section:
-        classes.append(("Osasto", section))
-    condition = request.form["condition"]
-    if section:
-        classes.append(("Osasto", condition))
-
-    items.add_item(title, descr, price, user_id, classes)
+    items.add_item(title, descr, price, user_id, section_id, condition_id)
     return redirect("/")
 
 @app.route("/update_item", methods=["POST"])

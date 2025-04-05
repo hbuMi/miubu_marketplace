@@ -2,22 +2,22 @@
 <html>
 
 <head>
-  <title>Ilmoituksen muokkaus</title>
+  <title>ilmoituksen muokkaus</title>
 </head>
 
 <body>
-    <h1>Ilmoituksen muokkaus</h1>
+    <h1>ilmoituksen muokkaus</h1>
   <form action="/update_item" method="post">
     <p>
-      Otsikko: <br />
+      otsikko: <br />
       <input type="text" name="title" value="{{ item.title }}" maxlength="50" required/>
     </p>
     <p>
-        Kuvaus: <br />
+        kuvaus: <br />
         <textarea rows="8" cols="50" name="descr" maxlength="1000" required>{{ item.descr }}</textarea>
     </p>
     <p>
-        Hinta: <br />
+        hinta: <br />
         <input type="text" name="price" size="7" value="{{ item.price }}"/> €
     </p>
     <input type="hidden" name="item_id" value="{{ item.id }}" />

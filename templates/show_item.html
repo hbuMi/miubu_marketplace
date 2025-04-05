@@ -9,31 +9,39 @@
   <h1>{{ item.title }}</h1>
   {% if session.user_id == item.user_id %}
   <p>
-    <a href="/edit_item/{{ item.id }}">Muokkaa</a>
-    <a href="/remove_item/{{ item.id }}">Poista</a>
+    <a href="/edit_item/{{ item.id }}">muokkaa</a>
+    <a href="/remove_item/{{ item.id }}">poista</a>
   </p>
   {% endif %}
   <p>
-    {{ item.descr if item.descr else "Ei kuvausta" }}
+    {{ item.descr if item.descr else "ei kuvausta" }}
   </p>
   <p>
-    Hinta: {{ item.price }} €
+    hinta: {{ item.price }} €
   </p>
   <p>
-    Ilmoittaja: <a href="/user/{{ item.user_id }}">{{ item.username }}</a>
+    ilmoittaja: <a href="/user/{{ item.user_id }}">{{ item.username }}</a>
   </p>
+  <p>
+    <strong>osio:</strong> {{ section.label }} - {{ section.name }}
+  </p>
+  <p>
+    <strong>kunto:</strong> {{ condition.name }}
+  </p>
+
   {% if classes %}
   <p>
-    Luokat:
+    luokat:
     <ul>
       {% for class in classes %}
-      <li>{{ class.title }}: {{ class.value }}</li>
+        <li>{{ class.title }}: {{ class.value }}</li>
       {% endfor %}
     </ul>
   </p>
   {% endif %}
+
   <p>
-    <a href="/">Takaisin</a>
+    <a href="/">takaisin</a>
   </p>
 </body>
 

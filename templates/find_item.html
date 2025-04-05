@@ -2,25 +2,25 @@
 <html>
 
 <head>
-  <title>Etsi ilmoitus</title>
+  <title>etsi ilmoitus</title>
 </head>
 
 <body>
-  <h1>Etsi ilmoitus</h1> 
+  <h1>etsi ilmoitus</h1> 
 
   <form action="/find_item" method="get">
     <p>
-        Hakusana: <input type="text" name="query" value="{{ query }}">
+        hakusana: <input type="text" name="query" value="{{ query }}">
     </p>
     <input type="submit" value="Lähetä">
   </form>
 
   <p>
-    <a href="/">Takaisin</a>
+    <a href="/">takaisin</a>
   </p>
 
   {% if query %}
-  <h2>Tulokset</h2>
+  <h2>tulokset</h2>
 <ul>
   {% for item in results %}
   <li><a href="/show_item/{{ item.id }}">{{ item.title }}</a></li>

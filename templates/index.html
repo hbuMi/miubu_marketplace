@@ -9,13 +9,13 @@
   <h1>miubu.marketplace</h1> 
   {% if session.username %}
   <p>
-    Hei, {{ session.username }}
+    hei, {{ session.username }}
   </p>
   <p>
     <a href="/logout">kirjaudu ulos</a>
   </p>
   <p>
-    <a  href="/new_item">Uusi ilmoitus</a>
+    <a  href="/new_item">uusi ilmoitus</a>
   </p>
   {% else %}
   <p>
@@ -24,10 +24,10 @@
   </p>
   {% endif %}
   <p>
-    <a  href="/find_item">Etsi ilmoitus</a>
+    <a  href="/find_item">etsi ilmoitus</a>
   </p>
 
-  <h2>Ilmoitukset</h2>
+  <h2>ilmoitukset</h2>
   <ul>
     {% for item in items %}
     <li><a href="{{ url_for('show_item', item_id=item.id) }}">{{ item.title }}</a></li>
