@@ -102,7 +102,14 @@ def edit_item(item_id):
         abort(404)
     if item["user_id"] != session["user_id"]:
         abort(403)
-    return render_template("edit_item.html", item=item)
+    sections = items.get_sections()
+    conditions = items.get_conditions()
+    
+    section_groups = {}
+    for s in sections:
+        section_groups.setdefault(s["label"], []).append(s)
+    
+    return render_template("edit_item.html", item=item, sections=section_groups, conditions=conditions)
 
 @app.route("/remove_item/<int:item_id>", methods=["GET", "POST"])
 def remove_item(item_id):
@@ -159,6 +166,8 @@ def update_item():
     title = request.form["title"]
     descr = request.form["descr"]
     price = request.form["price"]
+    section_id = request.form["section_id"]
+    condition_id = request.form["condition_id"]
 
     item = items.get_item(item_id)
     if not item:
@@ -167,7 +176,19 @@ def update_item():
         abort(403)
     if not title or len(title) > 50 or not descr or len(descr) > 1000:
         abort(403)
-    items.update_item(item_id, title, descr, price)
+    if not re.search("^[1-9][0-9]{0,5}$", price):
+        abort(403)
+
+    sections = items.get_sections()
+    conditions = items.get_conditions()
+
+    if not any(section["id"] == int(section_id) for section in sections):
+        return "VIRHE: valittu osio ei ole olemassa"
+
+    if not any(condition["id"] == int(condition_id) for condition in conditions):
+        return "VIRHE: valittu tila ei ole olemassa"
+
+    items.update_item(item_id, title, descr, price, section_id, condition_id)
     return redirect("/show_item/" + str(item_id))
 
 @app.route("/logout")

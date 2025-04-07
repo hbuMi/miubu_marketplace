@@ -3,6 +3,7 @@
 
 <head>
   <title>ilmoituksen muokkaus</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
@@ -21,7 +22,28 @@
         <input type="text" name="price" size="7" value="{{ item.price }}"/> €
     </p>
     <input type="hidden" name="item_id" value="{{ item.id }}" />
-    <input type="submit" value="Päivitä ilmoitusta" />
+    <p>
+      Osasto: <br />
+      <select name="section_id" required>
+        <option value="">(valitse)</option>
+        {% for label, options in sections.items() %}
+          <optgroup label="{{ label }}">
+            {% for section in options %}
+              <option value="{{ section.id }}" {% if section.id == item.section_id %}selected{% endif %}>{{ section.name }}</option>
+            {% endfor %}
+          </optgroup>
+        {% endfor %}
+      </select>
+    </p>
+    <p>
+      Kunto: <br />
+      <select name="condition_id" required>
+        {% for condition in conditions %}
+          <option value="{{ condition.id }}" {% if condition.id == item.condition_id %}selected{% endif %}>{{ condition.name }}</option>
+        {% endfor %}
+      </select>
+    </p>
+    <input type="submit" value="päivitä ilmoitusta" />
   </form>
 </body>
 

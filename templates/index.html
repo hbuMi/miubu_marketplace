@@ -3,6 +3,7 @@
 
 <head>
   <title>miubu marketplace</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
@@ -20,6 +21,8 @@
   {% else %}
   <p>
     <a href="/login">kirjaudu sisään</a>
+  </p>
+  <p>
     <a href="/register">rekisteröidy</a>
   </p>
   {% endif %}

@@ -3,6 +3,7 @@
 
 <head>
   <title>lisää ilmoitus</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
@@ -41,8 +42,13 @@
         {% endfor %}
       </select>
     </p>
-    <input type="submit" value="Luo ilmoitus" />
+    <button type="submit">luo ilmoitus</button>
   </form>
+
+  <p>
+    <a href="/">takaisin</a>
+  </p>
+  
 </body>
 
 </html>
