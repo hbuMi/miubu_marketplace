@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="centered-page">
+    <div class="message-container">
+        <h1>{{ title }}</h1>
+        <p>{{ message }}</p>
+        <a href="{{ link }}" class="action-button">{{ link_text }}</a>
+    </div>
+    <p>
+        <a href="/">takaisin</a>
+    </p>
+</body>
+</html>

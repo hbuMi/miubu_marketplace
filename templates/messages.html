@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>viestit</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>viestit</h1>
+
+    {% if conversations %}
+    <div class="conversations">
+        {% for conv in conversations %}
+        <div class="conversation">
+            <a href="/conversation/{{ conv.partner_id }}?item_id={{ conv.item_id }}">
+                <h3>{{ conv.partner_username }} ({{ conv.item_title }})</h3>
+                <p class="last-message">
+                    {% if conv.sender_id == session.user_id %}
+                        sinä: {{ conv.last_message_content|truncate(30) }}
+                    {% else %}
+                        {{ conv.partner_username }}: {{ conv.last_message_content|truncate(30) }}
+                    {% endif %}
+                </p>
+                <p class="timestamp">{{ conv.last_message_timestamp }}</p>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p>ei viestejä</p>
+    {% endif %}
+
+    <p><a href="/">takaisin</a></p>
+</body>
+</html>

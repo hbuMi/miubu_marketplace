@@ -7,7 +7,7 @@
 </head>
 
 <body>
-  <h1>miubu.marketplace</h1> 
+  <h1>miubu.marketplace</h1>
   {% if session.username %}
   <p>
     hei, {{ session.username }}
@@ -16,7 +16,10 @@
     <a href="/logout">kirjaudu ulos</a>
   </p>
   <p>
-    <a  href="/new_item">uusi ilmoitus</a>
+    <a href="/messages">viestit</a>
+  </p>
+  <p>
+    <a href="/new_item">uusi ilmoitus</a>
   </p>
   {% else %}
   <p>
@@ -27,7 +30,7 @@
   </p>
   {% endif %}
   <p>
-    <a  href="/find_item">etsi ilmoitus</a>
+    <a href="/find_item">etsi ilmoitus</a>
   </p>
 
   <h2>ilmoitukset</h2>

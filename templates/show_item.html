@@ -42,6 +42,19 @@
   </p>
   {% endif %}
 
+  {% if session.user_id != item.user_id %}
+  <h2>lähetä viesti</h2>
+  <form action="/send_message" method="post">
+    <input type="hidden" name="receiver_id" value="{{ item.user_id }}" />
+    <input type="hidden" name="item_id" value="{{ item.id }}" />
+    <p>
+      viesti: <br />
+      <textarea rows="4" cols="50" name="content" maxlength="1000" required></textarea>
+    </p>
+    <input type="submit" value="lähetä viesti" />
+  </form>
+  {% endif %}
+
   <p>
     <a href="/">takaisin</a>
   </p>

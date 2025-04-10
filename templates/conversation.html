@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>keskustelu käyttäjän {{ other_user.username }} kanssa</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>keskustelu käyttäjän {{ other_user.username }} kanssa</h1>
+    <h2>ilmoitus: {{ item.title }}</h2>
+
+    <div class="messages">
+        {% for message in messages %}
+        <div class="message {% if message.sender_id == current_user_id %}sent{% else %}received{% endif %}">
+            <div class="message-header">
+                {% if message.sender_id == current_user_id %}
+                    <strong>sinä</strong>
+                {% else %}
+                    <strong>{{ other_user.username }}</strong>
+                {% endif %}
+                <span class="timestamp">{{ message.timestamp }}</span>
+            </div>
+            <div class="message-content">
+                {{ message.content }}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <form action="/send_message" method="POST">
+        <input type="hidden" name="receiver_id" value="{{ other_user.id }}">
+        <input type="hidden" name="item_id" value="{{ item.id }}">
+        <textarea name="content" required placeholder="kirjoita viesti..."></textarea>
+        <button type="submit">lähetä</button>
+    </form>
+    <p>
+        <a href="/messages">takaisin</a>
+    </p>
+</body>
+</html>

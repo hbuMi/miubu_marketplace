@@ -1,10 +1,11 @@
 import sqlite3
-from flask import Flask
-from flask import abort, redirect, render_template, request, session
+from flask import Flask, abort, redirect, render_template, request, session
 import config
 import items
 import users
+import messages
 import re
+import datetime
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
@@ -28,13 +29,24 @@ def create():
     password1 = request.form["password1"]
     password2 = request.form["password2"]
     if password1 != password2:
-        return "VIRHE: salasanat eivät ole samat"
+        return render_template("error.html", 
+                            message="salasanat eivät ole samat",
+                            background_color="#111",
+                            text_color="#fff")
 
     try:
         users.create_user(username, password1)
     except sqlite3.IntegrityError:
-        return "VIRHE: tunnus on jo varattu"
-    return "tunnus luotu"
+        return render_template("error.html",
+                            message="tunnus on jo varattu",
+                            background_color="#111",
+                            text_color="#fff")
+    
+    return render_template("message.html",
+                        title="tunnus luotu",
+                        message="tunnus on nyt luotu onnistuneesti.",
+                        background_color="#111",
+                        text_color="#fff")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -143,11 +155,9 @@ def create_item():
     sections = items.get_sections()
     conditions = items.get_conditions()
 
-    # Tarkistetaan, että valittu osio löytyy osioista
     if not any(section["id"] == int(section_id) for section in sections):
         return "VIRHE: valittu osio ei ole olemassa"
 
-    # Tarkistetaan, että valittu tila löytyy tiloista
     if not any(condition["id"] == int(condition_id) for condition in conditions):
         return "VIRHE: valittu tila ei ole olemassa"
 
@@ -190,6 +200,49 @@ def update_item():
 
     items.update_item(item_id, title, descr, price, section_id, condition_id)
     return redirect("/show_item/" + str(item_id))
+
+@app.route("/messages")
+def view_messages():
+    check_login()
+    user_id = session["user_id"]
+    conversations = messages.get_conversations(user_id)
+    return render_template("messages.html", conversations=conversations)
+
+@app.route("/conversation/<int:receiver_id>")
+def conversation(receiver_id):
+    check_login()
+    user_id = session["user_id"]
+    item_id = request.args.get("item_id", type=int)
+    
+    if not item_id:
+        item_id = messages.get_latest_item_id_for_conversation(user_id, receiver_id)
+        if not item_id:
+            abort(404, "Keskustelua ei löytynyt")
+    
+    conv = messages.get_conversation(user_id, receiver_id, item_id)
+    if not conv:
+        abort(404)
+    
+    return render_template("conversation.html",
+                         messages=conv["messages"],
+                         other_user=conv["other_user"],
+                         item=conv["item"],
+                         current_user_id=user_id)
+
+@app.route("/send_message", methods=["POST"])
+def send_message():
+    check_login()
+    sender_id = session["user_id"]
+    receiver_id = request.form["receiver_id"]
+    item_id = request.form["item_id"]
+    content = request.form["content"]
+
+    if not content or len(content) > 1000:
+        abort(403)
+
+    messages.send_message(sender_id, receiver_id, item_id, content)
+
+    return redirect(f"/conversation/{receiver_id}?item_id={item_id}")
 
 @app.route("/logout")
 def logout():
