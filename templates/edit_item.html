@@ -23,7 +23,7 @@
     </p>
     <input type="hidden" name="item_id" value="{{ item.id }}" />
     <p>
-      Osasto: <br />
+      osasto: <br />
       <select name="section_id" required>
         <option value="">(valitse)</option>
         {% for label, options in sections.items() %}
@@ -36,7 +36,7 @@
       </select>
     </p>
     <p>
-      Kunto: <br />
+      kunto: <br />
       <select name="condition_id" required>
         {% for condition in conditions %}
           <option value="{{ condition.id }}" {% if condition.id == item.condition_id %}selected{% endif %}>{{ condition.name }}</option>

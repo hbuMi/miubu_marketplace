@@ -2,43 +2,52 @@
 <html>
 
 <head>
-  <title>miubu marketplace</title>
+  <title>miubu.marketplace</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
-  <h1>miubu.marketplace</h1>
-  {% if session.username %}
-  <p>
-    hei, {{ session.username }}
-  </p>
-  <p>
-    <a href="/logout">kirjaudu ulos</a>
-  </p>
-  <p>
-    <a href="/messages">viestit</a>
-  </p>
-  <p>
-    <a href="/new_item">uusi ilmoitus</a>
-  </p>
-  {% else %}
-  <p>
-    <a href="/login">kirjaudu sisään</a>
-  </p>
-  <p>
-    <a href="/register">rekisteröidy</a>
-  </p>
-  {% endif %}
-  <p>
-    <a href="/find_item">etsi ilmoitus</a>
-  </p>
+  <div class="container">
+    <header class="header">
+      <h1>miubu.marketplace</h1>
+      <nav class="user-nav">
+        {% if session.username %}
+        <div class="welcome">
+          <p>hei, {{ session.username }}!</p>
+        </div>
+        <a href="/user/{{ session.user_id }}" class="nav-link">oma profiili</a>
+        &nbsp;&nbsp;
+        <a href="/logout" class="nav-link">kirjaudu ulos</a>
+        &nbsp;&nbsp;
+        <a href="/messages" class="nav-link">viestit</a>
+        &nbsp;&nbsp;
+        <a href="/new_item" class="nav-link">uusi ilmoitus</a>
+        &nbsp;&nbsp;
+        {% else %}
+        <a href="/login" class="nav-link">kirjaudu sisään</a>
+        &nbsp;&nbsp;
+        <a href="/register" class="nav-link">rekisteröidy</a>
+        &nbsp;&nbsp;
+        {% endif %}
+        <a href="/find_item" class="nav-link">etsi ilmoitus</a>
+      </nav>
+    </header>
 
-  <h2>ilmoitukset</h2>
-  <ul>
-    {% for item in items %}
-    <li><a href="{{ url_for('show_item', item_id=item.id) }}">{{ item.title }}</a></li>
-    {% endfor %}
-  </ul>
+    <main>
+      <h2>uusimmat ilmoitukset</h2>
+      <ul class="item-list">
+        {% for item in items %}
+        <li class="item">
+          <a href="{{ url_for('show_item', item_id=item.id) }}" class="item-link">
+            <span class="item-title">{{ item.title }}</span>
+          </a>
+        </li>
+        {% else %}
+        <li class="no-items">ei aktiivisia ilmoituksia</li>
+        {% endfor %}
+      </ul>
+    </main>
+  </div>
 </body>
 
 </html>

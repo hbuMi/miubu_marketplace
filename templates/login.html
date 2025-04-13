@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>Kirjautuminen</title>
+  <title>kirjautuminen</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
@@ -12,7 +12,7 @@
     olet kirjautunut nimellä {{ session.username }}
   </p>
   <p>
-    <a href="/logout">Kirjaudu ulos</a>
+    <a href="/logout">kirjaudu ulos</a>
   </p>
   {% else %}
   <form action="/login" method="post">

@@ -27,8 +27,8 @@
     </div>
     <form action="/send_message" method="POST">
         <input type="hidden" name="receiver_id" value="{{ other_user.id }}">
-        <input type="hidden" name="item_id" value="{{ item.id }}">
-        <textarea name="content" required placeholder="kirjoita viesti..."></textarea>
+        {% if item %}<input type="hidden" name="item_id" value="{{ item.id }}">{% endif %}
+        <textarea name="content" required></textarea>
         <button type="submit">lähetä</button>
     </form>
     <p>

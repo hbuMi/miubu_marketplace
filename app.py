@@ -5,10 +5,17 @@ import items
 import users
 import messages
 import re
+import os
+from werkzeug.utils import secure_filename
 import datetime
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
+
+app.config.from_pyfile('config.py')
+app.config['PROFILE_PIC_FOLDER'] = os.path.join(app.root_path, app.config['PROFILE_PIC_FOLDER'])
+
+os.makedirs(app.config['PROFILE_PIC_FOLDER'], exist_ok=True)
 
 def check_login():
     if "user_id" not in session:
@@ -63,7 +70,7 @@ def login():
             session["username"] = username
             return redirect("/")
         else:
-            return "VIRHE: väärä tunnus tai salasana"
+            return "väärä tunnus tai salasana"
 
 @app.route("/show_item/<int:item_id>")
 def show_item(item_id):
@@ -76,14 +83,6 @@ def show_item(item_id):
 
     classes = items.get_classes(item_id)
     return render_template("show_item.html", item=item, section=section, condition=condition, classes=classes)
-
-@app.route("/user/<int:user_id>")
-def show_user(user_id):
-    user = users.get_user(user_id)
-    if not user:
-        abort(404)
-    items = users.get_items(user_id)
-    return render_template("show_user.html", user=user, items=items)
 
 @app.route("/find_item")
 def find_item():
@@ -156,10 +155,10 @@ def create_item():
     conditions = items.get_conditions()
 
     if not any(section["id"] == int(section_id) for section in sections):
-        return "VIRHE: valittu osio ei ole olemassa"
+        return "valittu osio ei ole olemassa"
 
     if not any(condition["id"] == int(condition_id) for condition in conditions):
-        return "VIRHE: valittu tila ei ole olemassa"
+        return "valittu tila ei ole olemassa"
 
     if not title or len(title) > 50 or not descr or len(descr) > 1000:
         abort(403)
@@ -193,10 +192,10 @@ def update_item():
     conditions = items.get_conditions()
 
     if not any(section["id"] == int(section_id) for section in sections):
-        return "VIRHE: valittu osio ei ole olemassa"
+        return "valittu osio ei ole olemassa"
 
     if not any(condition["id"] == int(condition_id) for condition in conditions):
-        return "VIRHE: valittu tila ei ole olemassa"
+        return "valittu tila ei ole olemassa"
 
     items.update_item(item_id, title, descr, price, section_id, condition_id)
     return redirect("/show_item/" + str(item_id))
@@ -231,18 +230,92 @@ def conversation(receiver_id):
 
 @app.route("/send_message", methods=["POST"])
 def send_message():
-    check_login()
     sender_id = session["user_id"]
     receiver_id = request.form["receiver_id"]
-    item_id = request.form["item_id"]
+    item_id = request.form.get("item_id")
     content = request.form["content"]
-
     if not content or len(content) > 1000:
         abort(403)
-
     messages.send_message(sender_id, receiver_id, item_id, content)
+    return redirect(f"/conversation/{receiver_id}" + (f"?item_id={item_id}" if item_id else ""))
 
-    return redirect(f"/conversation/{receiver_id}?item_id={item_id}")
+@app.route("/user/<int:user_id>")
+def user_profile(user_id):
+    user = users.get_user_profile(user_id)
+    if not user:
+        abort(404)
+    items = users.get_user_items(user_id)
+
+    user_dict = dict(user)
+    user_dict['follower_count'] = users.get_follower_count(user_id)
+    user_dict['following_count'] = users.get_following_count(user_id)
+
+    return render_template("user.html", user=user_dict, items=items)
+
+@app.route("/follow/<int:user_id>", methods=["POST"])
+def follow(user_id):
+    check_login()
+    current_user = session["user_id"]
+    if users.get_user_profile(user_id)['is_following']:
+        users.unfollow_user(current_user, user_id)
+    else:
+        users.follow_user(current_user, user_id)
+
+    user_profile_data = users.get_user_profile(user_id)
+
+    return render_template("user.html", user=user_profile_data, items=users.get_user_items(user_id))
+
+@app.route("/edit_profile")
+def edit_profile():
+    check_login()
+    user_id = session["user_id"]
+    user = users.get_user_profile(user_id)
+    return render_template("edit_profile.html", current_user=user)
+
+@app.route("/update_profile", methods=["POST"])
+def update_profile():
+    check_login()
+    user_id = session["user_id"]
+    
+    # Käsittele profiilikuvan lataus
+    if 'profile_pic' in request.files:
+        file = request.files['profile_pic']
+        if file.filename != '':
+            if allowed_file(file.filename):
+                filename = secure_filename(f"user_{user_id}_{file.filename}")
+                file.save(os.path.join(app.config['PROFILE_PIC_FOLDER'], filename))
+                users.update_profile_pic(user_id, filename)
+    
+    # Päivitä muut tiedot
+    username = request.form["username"]
+    bio = request.form.get("bio", "")
+    location = request.form.get("location", "")
+    
+    # Päivitä salasana jos annettu
+    current_password = request.form.get("current_password")
+    new_password = request.form.get("new_password")
+    confirm_password = request.form.get("confirm_password")
+    
+    if current_password and new_password and confirm_password:
+        if new_password != confirm_password:
+            return render_template("edit_profile.html", 
+                                current_user=users.get_user_profile(user_id),
+                                error="Uudet salasanat eivät täsmää")
+        
+        if not users.verify_password(user_id, current_password):
+            return render_template("edit_profile.html", 
+                                current_user=users.get_user_profile(user_id),
+                                error="Nykyinen salasana on väärä")
+        
+        users.update_password(user_id, new_password)
+    
+    users.update_profile(user_id, username, bio, location)
+    
+    return redirect(f"/user/{user_id}")
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
 @app.route("/logout")
 def logout():

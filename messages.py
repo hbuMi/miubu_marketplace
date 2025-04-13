@@ -1,8 +1,8 @@
 import db
 
 def send_message(sender_id, receiver_id, item_id, content):
-    sql = """INSERT INTO messages (sender_id, receiver_id, item_id, content, timestamp) 
-             VALUES (?, ?, ?, ?, datetime('now'))"""
+    sql = """INSERT INTO messages (sender_id, receiver_id, item_id, content) 
+             VALUES (?, ?, ?, ?)"""
     db.execute(sql, [sender_id, receiver_id, item_id, content])
 
 def get_conversations(user_id):

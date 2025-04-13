@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ user.username }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="profile-container">
+    <div class="profile-header">
+      <h1>{{ user.username }}</h1>
+      <div class="profile-picture">
+        {% if user.profile_pic %}
+          <img src="{{ url_for('static', filename='profile_pics/' + user.profile_pic) }}" alt="Profiilikuva">
+        {% else %}
+          <div class="default-avatar">{{ user.username[0]|upper }}</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="profile-meta">
+      {% if user.location %}
+        <div class="location">{{ user.location }}</div>
+      {% endif %}
+      <div class="follow-stats">
+        <span>{{ user.follower_count }} seuraajaa</span>
+        <span>{{ user.following_count }} seuraa</span>
+      </div>
+    </div>
+
+    {% if user.bio %}
+      <div class="bio">{{ user.bio }}</div>
+    {% endif %}
+
+    <div class="profile-actions">
+      {% if session['user_id'] == user.id %}
+        <a href="/edit_profile" class="btn btn-follow">muokkaa profiilia</a>
+      {% else %}
+        <form action="/follow/{{ user.id }}" method="POST">
+          {% if user.is_following %}
+            <button type="submit" class="btn btn-follow">lopeta seuraaminen</button>
+          {% else %}
+            <button type="submit" class="btn btn-follow">seuraa</button>
+          {% endif %}
+        </form>
+      {% endif %}
+      <a href="/" class="btn btn-back">takaisin</a>
+    </div>
+  </div>
+</body>
+</html>
