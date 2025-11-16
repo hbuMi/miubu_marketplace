@@ -18,7 +18,7 @@ Nykyinen tilanne:
 - Sovelluksessa on käyttäjäsivut, jotka näyttävät tilastoja ja käyttäjän lisäämät ilmoitukset.
 - Käyttäjä pystyy valitsemaan ilmoitukselle yhden tai useamman luokittelun (esim. ilmoituksen osasto, tavaran kunto).
 
-Asennusohjeet:
+**Asennusohjeet:**
 
 Kloonaa projekti koneelle:
 - git clone git@github.com:hbuMi/miubu_marketplace.git
