@@ -18,7 +18,11 @@ Nykyinen tilanne:
 - Sovelluksessa on käyttäjäsivut, jotka näyttävät tilastoja ja käyttäjän lisäämät ilmoitukset.
 - Käyttäjä pystyy valitsemaan ilmoitukselle yhden tai useamman luokittelun (esim. ilmoituksen osasto, tavaran kunto).
 
-Asennusohje:
+Asennusohjeet:
+
+Kloonaa projekti koneelle:
+- git clone git@github.com:hbuMi/miubu_marketplace.git
+
 Luo virtuaaliympäristö:
 - python3 -m venv venv
 
@@ -28,11 +32,12 @@ Aktivoi virtuaaliympäristö:
 - Mac/Linux:
   - source venv/bin/activate
 
-Asenna tarvittavat Python-kirjastot:
+Asenna riippuvuudet:
 - pip install flask
 
-Luo tietokannan taulut, sovelluksessa käytetään SQLite-tietokantaa. Luo tietokannan taulut ajamalla seuraava komento:
-- python app.py
+Luo tietokanta:
+- sqlite3 database.db < schema.sql
+  sqlite3 database.db < init.sql
 
-Suorita sovellus. Kun kaikki on asetettu, voit käynnistää sovelluksen seuraavalla komennolla:
+Käynnistä:
 - flask run
