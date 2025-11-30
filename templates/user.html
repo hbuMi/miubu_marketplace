@@ -46,6 +46,28 @@
       {% endif %}
       <a href="/" class="btn btn-back">takaisin</a>
     </div>
+    
+    {% if user_items is defined %}
+    <section class="user-items">
+      <h2>ilmoitukset</h2>
+      {% if user_items %}
+      <ul class="item-list">
+        {% for item in user_items %}
+        <li class="item">
+          <a href="{{ url_for('show_item', item_id=item.id) }}" class="item-link">
+            <span class="item-title">{{ item.title }}</span>
+          </a>
+          {% if item.price is not none %}
+            <span class="item-price"> — {{ item.price }} €</span>
+          {% endif %}
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p>ei ilmoituksia</p>
+      {% endif %}
+    </section>
+    {% endif %}
   </div>
 </body>
 </html>

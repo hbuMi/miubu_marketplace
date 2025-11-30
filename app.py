@@ -250,7 +250,7 @@ def user_profile(user_id):
     user_dict['follower_count'] = users.get_follower_count(user_id)
     user_dict['following_count'] = users.get_following_count(user_id)
 
-    return render_template("user.html", user=user_dict, items=items)
+    return render_template("user.html", user=user_dict, user_items=items)
 
 @app.route("/follow/<int:user_id>", methods=["POST"])
 def follow(user_id):
@@ -263,7 +263,7 @@ def follow(user_id):
 
     user_profile_data = users.get_user_profile(user_id)
 
-    return render_template("user.html", user=user_profile_data, items=users.get_user_items(user_id))
+    return render_template("user.html", user=user_profile_data, user_items=users.get_user_items(user_id))
 
 @app.route("/edit_profile")
 def edit_profile():
