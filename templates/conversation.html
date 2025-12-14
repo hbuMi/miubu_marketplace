@@ -26,6 +26,7 @@
         {% endfor %}
     </div>
     <form action="/send_message" method="POST">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
         <input type="hidden" name="receiver_id" value="{{ other_user.id }}">
         {% if item %}<input type="hidden" name="item_id" value="{{ item.id }}">{% endif %}
         <textarea name="content" required></textarea>

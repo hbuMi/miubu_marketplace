@@ -8,6 +8,7 @@ import re
 import os
 from werkzeug.utils import secure_filename
 import datetime
+import secrets
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
@@ -19,6 +20,11 @@ os.makedirs(app.config['PROFILE_PIC_FOLDER'], exist_ok=True)
 
 def check_login():
     if "user_id" not in session:
+        abort(403)
+
+def check_csrf():
+    token = request.form.get("csrf_token")
+    if not token or token != session.get("csrf_token"):
         abort(403)
 
 @app.route("/")
@@ -68,6 +74,7 @@ def login():
         if user_id:
             session["user_id"] = user_id
             session["username"] = username
+            session["csrf_token"] = secrets.token_hex(16)
             return redirect("/")
         else:
             return "väärä tunnus tai salasana"
@@ -135,6 +142,7 @@ def remove_item(item_id):
         return render_template("remove_item.html", item=item)
 
     if request.method == "POST":
+        check_csrf()
         if "remove" in request.form:
             items.remove_item(item_id)
             return redirect("/")
@@ -144,6 +152,7 @@ def remove_item(item_id):
 @app.route("/create_item", methods=["POST"])
 def create_item():
     check_login()
+    check_csrf()
     title = request.form["title"]
     descr = request.form["descr"]
     price = request.form["price"]
@@ -171,6 +180,7 @@ def create_item():
 @app.route("/update_item", methods=["POST"])
 def update_item():
     check_login()
+    check_csrf()
     item_id = request.form["item_id"]
     title = request.form["title"]
     descr = request.form["descr"]
@@ -230,10 +240,14 @@ def conversation(receiver_id):
 
 @app.route("/send_message", methods=["POST"])
 def send_message():
+    check_login()
+    check_csrf()
+
     sender_id = session["user_id"]
     receiver_id = request.form["receiver_id"]
     item_id = request.form.get("item_id")
     content = request.form["content"]
+    
     if not content or len(content) > 1000:
         abort(403)
     messages.send_message(sender_id, receiver_id, item_id, content)
@@ -255,6 +269,7 @@ def user_profile(user_id):
 @app.route("/follow/<int:user_id>", methods=["POST"])
 def follow(user_id):
     check_login()
+    check_csrf()
     current_user = session["user_id"]
     if users.get_user_profile(user_id)['is_following']:
         users.unfollow_user(current_user, user_id)
@@ -275,6 +290,7 @@ def edit_profile():
 @app.route("/update_profile", methods=["POST"])
 def update_profile():
     check_login()
+    check_csrf()
     user_id = session["user_id"]
     
     # Käsittele profiilikuvan lataus
@@ -319,7 +335,5 @@ def allowed_file(filename):
 
 @app.route("/logout")
 def logout():
-    if "user_id" in session:
-        del session["user_id"]
-        del session["username"]
+    session.clear()
     return redirect("/")

@@ -9,6 +9,8 @@
 <body>
     <h1>lisää ilmoitus</h1>
   <form action="/create_item" method="post">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+
     <p>
       otsikko: <br />
       <input type="text" name="title" maxlength="50" required/>

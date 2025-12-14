@@ -9,6 +9,7 @@
 <body>
     <h1>ilmoituksen muokkaus</h1>
   <form action="/update_item" method="post">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
     <p>
       otsikko: <br />
       <input type="text" name="title" value="{{ item.title }}" maxlength="50" required/>

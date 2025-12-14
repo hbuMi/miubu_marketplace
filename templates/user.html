@@ -37,6 +37,7 @@
         <a href="/edit_profile" class="btn btn-follow">muokkaa profiilia</a>
       {% else %}
         <form action="/follow/{{ user.id }}" method="POST">
+          <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
           {% if user.is_following %}
             <button type="submit" class="btn btn-follow">lopeta seuraaminen</button>
           {% else %}

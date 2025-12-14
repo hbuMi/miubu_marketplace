@@ -45,6 +45,7 @@
   {% if session.user_id != item.user_id %}
   <h2>lähetä viesti</h2>
   <form action="/send_message" method="post">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
     <input type="hidden" name="receiver_id" value="{{ item.user_id }}" />
     <input type="hidden" name="item_id" value="{{ item.id }}" />
     <p>

@@ -10,7 +10,7 @@ CREATE TABLE users (
     email TEXT UNIQUE,
     email_verified BOOLEAN DEFAULT FALSE,
     verification_token TEXT,
-    role TEXT DEFAULT 'user'
+    role TEXT DEFAULT 'user',
     follower_count INTEGER DEFAULT 0
 );
 
