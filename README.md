@@ -21,7 +21,7 @@ Nykyinen tilanne:
 **Asennusohjeet:**
 
 Kloonaa projekti koneelle:
-- git clone git@github.com:hbuMi/miubu_marketplace.git
+- git clone https://github.com/hbuMi/miubu_marketplace.git
 
 Luo virtuaaliympäristö:
 - python3 -m venv venv
